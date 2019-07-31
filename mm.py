@@ -33,6 +33,9 @@ def mediamovel(equity):
 	for row in my_list:
 		#if i == 0:
 		if a != 0:
+			if (row[4]=='null'):
+				print('Erro na leitura da cotacao')
+				break
 			l.append(float(row[4]))
 			l.pop(0)
 		else:
