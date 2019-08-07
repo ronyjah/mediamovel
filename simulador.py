@@ -3,13 +3,13 @@ import csv
 import time
 equity = 'AZUL4'
 valorCompra = 0.0
-diretorio = '/home/ronaldo/mercado/'
+diretorio = './'
 margem = 0.15 # Margem de seguranca apos cruzar a media para evitar falsos rompimentos.
 renda = 0.0
 l = [0] *20
-ldata = [0] *20 
+ldata = [0] *20
 #try:
-f =open(diretorio+equity+".SA.csv", "rb")
+f =open(diretorio+equity+".SA.csv", "r")
 #except:
 #	time.sleep (1)
 #	driver.find_element_by_xpath("//span[@class='Fl(end) Pos(r) T(-6px)']/a").click()

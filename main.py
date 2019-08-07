@@ -1,7 +1,7 @@
 from mm import *
 
 empresas = list()
-with open("/home/ronaldo/mercado/bancodadosz") as f:
+with open("bancodadosz") as f:
 	line = f.readline()
 	while line:
 		empresas.append(line.strip())

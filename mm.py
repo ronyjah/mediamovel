@@ -1,46 +1,34 @@
-from selenium import webdriver
 import csv
-import time
-diretorio="/home/ronaldo/mercado/"
+import datetime
+import pandas_datareader.data as pdr
 
 def mediamovel(equity):
-	chrome_options = webdriver.ChromeOptions()
-	chrome_options.add_argument('--no-sandbox')
-	prefs = {"download.default_directory" : diretorio}
-	chrome_options.add_experimental_option("prefs",prefs)
-	driver = webdriver.Chrome(diretorio+'chromedriver',chrome_options=chrome_options)
-	driver.get("https://br.financas.yahoo.com/quote/"+equity+".SA/history?p="+equity+".SA")
-	try:
-		driver.find_element_by_xpath("//span[@class='Fl(end) Pos(r) T(-6px)']/a").click()
-	except:
-		time.sleep(1)
-		#driver = webdriver.Chrome('/home/ronaldo/mercado/chromedriver',chrome_options=chrome_options)
-		driver.find_element_by_xpath("//span[@class='Fl(end) Pos(r) T(-6px)']/a").click()
+	if '.SA' not in equity:
+		equity = equity + '.SA'
+	end = datetime.datetime.today()
+	start = datetime.datetime(end.year - 1, end.month, end.day)
 
-	time.sleep (1)
-	l = [0] *20
-	try:
-		f =open(diretorio+equity+".SA.csv", "rb")
-	except:
-		time.sleep (1)
-		driver.find_element_by_xpath("//span[@class='Fl(end) Pos(r) T(-6px)']/a").click()
-		time.sleep (1)
-		f =open(diretorio+equity+".SA.csv", "rb")
-	cr = csv.reader(f, delimiter=',')
-	a=0
-	my_list = list(cr)
-	driver.close()
-	for row in my_list:
-		#if i == 0:
-		if a != 0:
-			if (row[4]=='null'):
-				print('Erro na leitura da cotacao')
-				break
-			l.append(float(row[4]))
-			l.pop(0)
-		else:
-			a=a+1
-	mm = sum(l) / len(l)
-	if (l[18] < mm) and (l[19]> mm):
-		print("Cruzou pra cima...")
-	print("Media movel "+equity+": {0} ultimo valor: {1}".format(mm,l[19]))
+	stock_history = pdr.get_data_yahoo(equity, start=start, end=end)
+	stock_history.to_csv("{}.csv".format(equity))
+
+	with open("{}.csv".format(equity)) as f:
+		cr = csv.reader(f, delimiter=',')
+
+		l = [0] *20
+		a = 0
+		my_list = list(cr)
+
+		for row in my_list:
+			#if i == 0:
+			if a != 0:
+				if (row[4]=='null'):
+					print('Erro na leitura da cotacao')
+					break
+				l.append(float(row[4]))
+				l.pop(0)
+			else:
+				a=a+1
+		mm = sum(l) / len(l)
+		if (l[18] < mm) and (l[19]> mm):
+			print("Cruzou pra cima...")
+		print("Media movel "+equity+": {0} ultimo valor: {1}".format(mm,l[19]))
